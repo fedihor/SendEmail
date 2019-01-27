@@ -29,20 +29,17 @@ namespace SendEmail
             {
                 // Адрес и порт smtp-сервера, с которого мы и будем отправлять письмо.
                 client = new SmtpClient(Host, Port);
-
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
                 client.Credentials = new System.Net.NetworkCredential(MailFrom, Password);
                 client.EnableSsl = true;
 
                 // Создаем письмо.
-                var mail = new MailMessage(MailFrom, MailTo);
-                mail.Subject = Subject;
-                mail.Body = Body;
-                mail.IsBodyHtml = IsBodyHtml;
-
-                // Отправить письмо.
-                client.Send(mail);
+                using (MailMessage mail = new MailMessage(MailFrom, MailTo) { Subject = Subject, Body = Body, IsBodyHtml = true })
+                {
+                    // Отправить письмо.
+                    client.Send(mail);
+                }
             }
             catch (Exception ex)
             {
